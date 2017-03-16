@@ -150,9 +150,6 @@ typedef enum :NSInteger{
     
     [self removeFromSuperview];
 }
-- (void)show{
-   
-}
 
 //颜色转背景图片
 - (UIImage *)imageWithColor:(UIColor *)color{
@@ -165,8 +162,6 @@ typedef enum :NSInteger{
         UIGraphicsEndImageContext();
         return theImage;  
 }
-
-
 
 
 + (instancetype)alarmWithTitle:(NSString *)title message:(NSString *)message delegate:(id)object cancelButtonTitle:(NSString *)cancelTitleStr otherButtonTitles:(NSMutableArray *)titleArr andButtonStateIsVertica:(BOOL)isVertical andIsContentTextfield:(BOOL)isContent{

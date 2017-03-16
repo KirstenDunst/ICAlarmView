@@ -19,6 +19,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
+    
+    
     UIButton *myCreateButton = [UIButton buttonWithType:UIButtonTypeCustom];
     myCreateButton.frame = CGRectMake(0, 0, 100, 100);
     [myCreateButton setBackgroundColor:[UIColor grayColor]];
@@ -30,13 +32,14 @@
 
 - (void)buttonChoose:(UIButton *)sender{
     //提醒消息显示
-//    ICAlarmView *alermView = [ICAlarmView alarmWithTitle:@"请输入密码" message:@"卡拉斯京规划接口数量分别 v 啊数据的哈世界第八接收代购哈白色的俱乐部嘎介绍东莞巴士单机版 v 成功把接口势单力薄 v 风景阿里斯顿科技部佛教萨的脸部肌肤可不是 v 啊独立思考就把接口被流感病毒数据库啦思考就把 v 就撒开了饭" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@[@"其他",@"测试"].copy andButtonStateIsVertica:YES andIsContentTextfield:NO];
+//    ICAlarmView *alermView = [ICAlarmView alarmWithTitle:@"请输入密码" message:@"卡拉斯京规划接口数量分别 v 啊数据的哈世界第八接收代购哈白色的俱乐部嘎介绍东莞巴士单机版 v 成功把接口势单力薄 v 风景阿里斯顿科技部佛教萨的脸部肌肤可不是 v 啊独立思考就把接口被流感病毒数据库啦思考就把 v 就撒开了饭" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@[@"其他",@"测试",@"other"].copy andButtonStateIsVertica:NO andIsContentTextfield:NO];
     
     //带输入框的弹出框显示
-    ICAlarmView *alermView = [ICAlarmView alarmWithTitle:@"请输入密码" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@[@"其他"].copy andButtonStateIsVertica:YES andIsContentTextfield:YES];
+    ICAlarmView *alermView = [ICAlarmView alarmWithTitle:@"请输入密码" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@[@"其他",@"other"].copy andButtonStateIsVertica:NO andIsContentTextfield:YES];
     
     
     [self.view addSubview:alermView];
+    
 }
 
 #pragma mark-------------------ICAlarmViewDelegate方法
