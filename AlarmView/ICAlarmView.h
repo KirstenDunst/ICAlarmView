@@ -26,7 +26,7 @@
 - (instancetype)initWithAlarmWithTitle:(NSString *)title message:(NSString *)message delegate:(id)object cancelButtonTitle:(NSString *)cancelTitleStr otherButtonTitles:(NSMutableArray *)titleArr andButtonStateIsVertica:(BOOL)isVertical andIsContentTextfield:(BOOL)isContent;
 + (instancetype)alarmWithTitle:(NSString *)title message:(NSString *)message delegate:(id)object cancelButtonTitle:(NSString *)cancelTitleStr otherButtonTitles:(NSMutableArray *)titleArr andButtonStateIsVertica:(BOOL)isVertical andIsContentTextfield:(BOOL)isContent;
 
-
+- (void)show;
 
 @end
 

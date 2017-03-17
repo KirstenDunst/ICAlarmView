@@ -171,7 +171,10 @@ typedef enum :NSInteger{
 }
 - (instancetype)initWithAlarmWithTitle:(NSString *)title message:(NSString *)message delegate:(id)object cancelButtonTitle:(NSString *)cancelTitleStr otherButtonTitles:(NSMutableArray *)titleArr andButtonStateIsVertica:(BOOL)isVertical andIsContentTextfield:(BOOL)isContent
 {
-    if ([super initWithFrame:CGRectMake(0, 0, KMAINBOUNDS.size.width , KMAINBOUNDS.size.height)]) {
+    self = [super initWithFrame:CGRectMake(0, 0, KMAINBOUNDS.size.width , KMAINBOUNDS.size.height)];
+    self.backgroundColor = [UIColor colorWithRed:0.f green:0.f blue:0.f alpha:0.6f];
+    
+    if (self) {
         
         self.delegate = object;
         [self createViewWithTitle:title andMessage:message andIsContentTextfield:isContent];
@@ -187,6 +190,11 @@ typedef enum :NSInteger{
 }
 
 
+
+- (void)show{
+    UIWindow *keyv=[[UIApplication sharedApplication] keyWindow];
+    [keyv addSubview:self];
+}
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
@@ -194,9 +202,6 @@ typedef enum :NSInteger{
     // Drawing code
 }
 */
-#pragma mark--------------------代理方法实现
-
-
 
 
 @end
