@@ -146,7 +146,9 @@ typedef enum :NSInteger{
     
     [self.delegate alertView:self clickedButtonAtIndex:sender.tag-btnTag];
     
-    [self.delegate alertView:self clickedButtonAtIndex:sender.tag-btnTag andWithContentStr:textfield.text];
+    if (textfield) {
+         [self.delegate alertView:self clickedButtonAtIndex:sender.tag-btnTag andWithContentStr:textfield.text];
+    }
     
     [self removeFromSuperview];
 }
