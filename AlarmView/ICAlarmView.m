@@ -18,72 +18,105 @@
 //竖向每个点击按钮的高度
 #define BTNHEIGHT  40
 
+//label的字号大小
+#define TitleFont 15
+
 typedef enum :NSInteger{
     btnTag = 10000000,
 }buttonTags;
 
 @interface ICAlarmView () {
-    //白色框背景view
-    UIView *bgView;
     //输入文本
     UITextField *textfield;
-    //
+    //z记录最大的高度
     CGFloat max_Content;
+    //动画的间隔时间
+    NSTimeInterval interval;
+    //message动画循环的次数；
+    int messageCount;
 }
-@property(nonatomic , strong)NSMutableArray *buttonTitleArr;
+//白色框背景view
+@property (nonatomic, strong)UIView *bgView;
 //设置message内容显示的
 @property (nonatomic, assign)NSTextAlignment stateType;
 @end
 
 @implementation ICAlarmView
 
-- (NSMutableArray *)buttonTitleArr{
-    if (!_buttonTitleArr) {
-        _buttonTitleArr = [NSMutableArray array];
-    }
-    return _buttonTitleArr;
-}
-
-- (void)createViewWithTitle:(NSString *)title andMessage:(NSString *)message andIsContentTextfield:(BOOL)isContent{
-    self.backgroundColor = [UIColor colorWithRed:0.f green:0.f blue:0.f alpha:0.6f];
-    
-    bgView = [[UIView alloc]init];
-    bgView.center = CGPointMake(KMAINBOUNDS.size.width/2, KMAINBOUNDS.size.height/2);
-    bgView.backgroundColor = [UIColor whiteColor];
-    bgView.layer.cornerRadius = 10;
-    bgView.clipsToBounds = YES;
-    
+- (void)createTitleWithTitle:(NSString *)title {
     UILabel *label = [[UILabel alloc]init];
     label.font = [UIFont systemFontOfSize:17];
     label.text = title;
     CGSize size = [label sizeThatFits:CGSizeMake(ALARM_WITH-2*CONTENT_DIS, 0)];
     label.frame = CGRectMake(CONTENT_DIS, 10, ALARM_WITH-2*CONTENT_DIS, size.height);
     label.textAlignment = 1;
-    [bgView addSubview:label];
+    [self.bgView addSubview:label];
     max_Content = CGRectGetMaxY(label.frame)+10;
-    
+}
+
+//显示单个message内容显示
+- (void)createViewWithTitle:(NSString *)title andMessage:(NSString *)message andIsContentTextfield:(BOOL)isContent{
+    [self createTitleWithTitle:title];
     if (message.length>0) {
         UILabel *mess_label = [[UILabel alloc]init];
-        mess_label.font = [UIFont systemFontOfSize:15];
+        mess_label.font = [UIFont systemFontOfSize:TitleFont];
         mess_label.text = message;
         mess_label.textColor = [UIColor grayColor];
         mess_label.textAlignment = self.stateType;
         mess_label.numberOfLines = 0;
         CGSize sizeMes = [mess_label sizeThatFits:CGSizeMake(ALARM_WITH-2*CONTENT_DIS, 0)];
         mess_label.frame = CGRectMake(CONTENT_DIS, max_Content, ALARM_WITH-2*CONTENT_DIS, sizeMes.height);
-        [bgView addSubview:mess_label];
+        [self.bgView addSubview:mess_label];
         max_Content = CGRectGetMaxY(mess_label.frame)+10;
     }else{
         if (isContent) {     //这里有需要可以使用textview替代
             textfield = [[UITextField alloc]initWithFrame:CGRectMake(CONTENT_DIS, max_Content, ALARM_WITH-2*CONTENT_DIS, 40)];
             textfield.borderStyle = UITextBorderStyleRoundedRect;
-            [bgView addSubview:textfield];
+            [self.bgView addSubview:textfield];
             max_Content = CGRectGetMaxY(textfield.frame)+10;
         }
     }
 }
 
-- (void)buttonTitleArr:(NSMutableArray *)titleArr btnColors:(NSArray *)btnColors andIsVertical:(BOOL)isVertical{
+//显示多个动画显示message内容
+- (void)createAnimationViewWithTitle:(NSString *)title andMessageArr:(NSArray *)messageArr {
+    [self createTitleWithTitle:title];
+    CGFloat nowHeight = max_Content;
+    for (int i = 0; i < messageArr.count; i++) {
+        UILabel *label = [[UILabel alloc] init];
+        label.text = messageArr[i];
+        label.font = [UIFont systemFontOfSize:TitleFont];
+        label.numberOfLines = 0;
+        CGSize sizeMes = [label sizeThatFits:CGSizeMake(ALARM_WITH-2*CONTENT_DIS, 0)];
+        max_Content += sizeMes.height+3;
+    }
+    max_Content += 10;
+    [self showAnimationMessageWithMessageArr:messageArr begainY:nowHeight];
+}
+- (void)showAnimationMessageWithMessageArr:(NSArray *)messageArr begainY:(CGFloat)begainY {
+    messageCount += 1;
+    //创建显示label； 修改begainy
+    UILabel *label = [[UILabel alloc] init];
+    label.text = messageArr[messageCount-1];
+    label.textColor = [UIColor grayColor];
+    label.font = [UIFont systemFontOfSize:TitleFont];
+    label.numberOfLines = 0;
+    label.textAlignment = self.stateType;
+    CGSize sizeMes = [label sizeThatFits:CGSizeMake(ALARM_WITH-2*CONTENT_DIS, 0)];
+    label.frame = CGRectMake(CONTENT_DIS, begainY, ALARM_WITH-2*CONTENT_DIS, sizeMes.height);
+    [self.bgView addSubview:label];
+    begainY = CGRectGetMaxY(label.frame)+3;
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(interval * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if (messageCount >= messageArr.count) {
+            return;
+        }else {
+            [self showAnimationMessageWithMessageArr:messageArr begainY:begainY];
+        }
+    });
+}
+
+- (void)buttonTitleArr:(NSArray *)titleArr btnColors:(NSArray *)btnColors andIsVertical:(BOOL)isVertical{
     if (titleArr.count>0) {
         UIView *btnBgView;
         if (isVertical) {
@@ -94,16 +127,16 @@ typedef enum :NSInteger{
             btnBgView = [self horizonButtonViewBackWithTitleArr:titleArr btnColors:btnColors];
         }
         btnBgView.frame = CGRectMake(0, max_Content, btnBgView.frame.size.width, btnBgView.frame.size.height);
-        [bgView addSubview:btnBgView];
-        bgView.bounds = CGRectMake(0, 0, ALARM_WITH, CGRectGetMaxY(btnBgView.frame));
+        [self.bgView addSubview:btnBgView];
+        self.bgView.bounds = CGRectMake(0, 0, ALARM_WITH, CGRectGetMaxY(btnBgView.frame));
     }else{
-        bgView.bounds = CGRectMake(0, 0, ALARM_WITH, max_Content);
+        self.bgView.bounds = CGRectMake(0, 0, ALARM_WITH, max_Content);
     }
-    [self addSubview:bgView];
+    [self addSubview:self.bgView];
 }
 
 //竖列button的排布
-- (UIView *)verticalButtonViewBackWithTitleArr:(NSMutableArray *)titleArr btnColors:(NSArray *)btnColors{
+- (UIView *)verticalButtonViewBackWithTitleArr:(NSArray *)titleArr btnColors:(NSArray *)btnColors{
     UIView *btnBgView = [[UIView alloc]init];
     btnBgView.backgroundColor = [UIColor colorWithRed:235/255.0 green:235/255.0 blue:235/255.0 alpha:1];
     btnBgView.frame = CGRectMake(0, 0, ALARM_WITH, BTNHEIGHT*titleArr.count);
@@ -127,7 +160,7 @@ typedef enum :NSInteger{
 
 
 //横向button排布。       button按钮的高度这里取50，如有需要自行修改
-- (UIView *)horizonButtonViewBackWithTitleArr:(NSMutableArray *)titleArr btnColors:(NSArray *)btnColors{
+- (UIView *)horizonButtonViewBackWithTitleArr:(NSArray *)titleArr btnColors:(NSArray *)btnColors{
     UIView *btnBgView = [[UIView alloc]init];
     btnBgView.frame = CGRectMake(0, 0, ALARM_WITH, 50);
     btnBgView.backgroundColor = [UIColor colorWithRed:235/255.0 green:235/255.0 blue:235/255.0 alpha:1];
@@ -189,23 +222,50 @@ typedef enum :NSInteger{
     self = [super initWithFrame:CGRectMake(0, 0, KMAINBOUNDS.size.width , KMAINBOUNDS.size.height)];
     self.backgroundColor = [UIColor colorWithRed:0.f green:0.f blue:0.f alpha:0.6f];
     self.stateType = state;
+    max_Content = 0;
     if (self) {
         self.delegate = object;
         [self createViewWithTitle:title andMessage:message andIsContentTextfield:isContent];
-        if (titleArr.count>0) {
-            [self.buttonTitleArr addObjectsFromArray:titleArr];
-        }
-        [self buttonTitleArr:self.buttonTitleArr btnColors:btnColors andIsVertical:isVertical];
+        [self buttonTitleArr:titleArr btnColors:btnColors andIsVertical:isVertical];
     }
     return self;
 }
 
 
++ (instancetype)alarmWithAnimationTitle:(NSString *)title messageArr:(NSArray *)messageArr messageType:(NSTextAlignment)state timeInterval:(NSTimeInterval)timeInterval delegate:(id)object btnTitles:(NSArray *)titleArr btnColors:(NSArray *)btnColors andButtonStateIsVertica:(BOOL)isVertical {
+    return [[self alloc]initWithAnimationAlarmWithTitle:title messageArr:messageArr messageType:state timeInterval:timeInterval delegate:object btnTitles:titleArr btnColors:btnColors andButtonStateIsVertica:isVertical];
+}
+- (instancetype)initWithAnimationAlarmWithTitle:(NSString *)title messageArr:(NSArray *)messageArr messageType:(NSTextAlignment)state timeInterval:(NSTimeInterval)timeInterval delegate:(id)object btnTitles:(NSArray *)titleArr btnColors:(NSArray *)btnColors andButtonStateIsVertica:(BOOL)isVertical {
+    self = [super initWithFrame:CGRectMake(0, 0, KMAINBOUNDS.size.width , KMAINBOUNDS.size.height)];
+    self.backgroundColor = [UIColor colorWithRed:0.f green:0.f blue:0.f alpha:0.6f];
+    self.stateType = state;
+    max_Content = 0;
+    interval = timeInterval;
+    messageCount = 0;
+    if (self) {
+        self.delegate = object;
+        [self createAnimationViewWithTitle:title andMessageArr:messageArr];
+        [self buttonTitleArr:titleArr btnColors:btnColors andIsVertical:isVertical];
+    }
+    return self;
+}
 
 - (void)show{
     UIWindow *keyv=[[UIApplication sharedApplication] keyWindow];
     [keyv addSubview:self];
 }
+
+- (UIView *)bgView {
+    if (!_bgView) {
+        _bgView = [[UIView alloc]init];
+        _bgView.center = CGPointMake(KMAINBOUNDS.size.width/2, KMAINBOUNDS.size.height/2);
+        _bgView.backgroundColor = [UIColor whiteColor];
+        _bgView.layer.cornerRadius = 10;
+        _bgView.clipsToBounds = YES;
+    }
+    return _bgView;
+}
+
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
