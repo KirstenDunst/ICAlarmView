@@ -14,6 +14,7 @@
 		1F1E32B21E795BA300AE3ABC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1F1E32B11E795BA300AE3ABC /* Assets.xcassets */; };
 		1F1E32B51E795BA300AE3ABC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1F1E32B31E795BA300AE3ABC /* LaunchScreen.storyboard */; };
 		1F1E32BE1E795C4A00AE3ABC /* ICAlarmView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F1E32BD1E795C4A00AE3ABC /* ICAlarmView.m */; };
+		DB88C15C21F8955500797AE2 /* NSString+Extends.m in Sources */ = {isa = PBXBuildFile; fileRef = DB88C15B21F8955500797AE2 /* NSString+Extends.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +30,8 @@
 		1F1E32B61E795BA300AE3ABC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1F1E32BC1E795C4A00AE3ABC /* ICAlarmView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ICAlarmView.h; sourceTree = "<group>"; };
 		1F1E32BD1E795C4A00AE3ABC /* ICAlarmView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ICAlarmView.m; sourceTree = "<group>"; };
+		DB88C15A21F8955500797AE2 /* NSString+Extends.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+Extends.h"; sourceTree = "<group>"; };
+		DB88C15B21F8955500797AE2 /* NSString+Extends.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+Extends.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +70,8 @@
 				1F1E32AC1E795BA200AE3ABC /* ViewController.m */,
 				1F1E32BC1E795C4A00AE3ABC /* ICAlarmView.h */,
 				1F1E32BD1E795C4A00AE3ABC /* ICAlarmView.m */,
+				DB88C15A21F8955500797AE2 /* NSString+Extends.h */,
+				DB88C15B21F8955500797AE2 /* NSString+Extends.m */,
 				1F1E32AE1E795BA300AE3ABC /* Main.storyboard */,
 				1F1E32B11E795BA300AE3ABC /* Assets.xcassets */,
 				1F1E32B31E795BA300AE3ABC /* LaunchScreen.storyboard */,
@@ -159,6 +164,7 @@
 				1F1E32AD1E795BA200AE3ABC /* ViewController.m in Sources */,
 				1F1E32AA1E795BA200AE3ABC /* AppDelegate.m in Sources */,
 				1F1E32A71E795BA200AE3ABC /* main.m in Sources */,
+				DB88C15C21F8955500797AE2 /* NSString+Extends.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

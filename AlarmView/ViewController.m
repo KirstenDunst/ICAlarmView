@@ -38,7 +38,7 @@
 //    ICAlarmView *alermView = [ICAlarmView alarmWithTitle:@"请输入密码" message:@"" messageType:NSTextAlignmentLeft delegate:self btnTitles:@[@"其他",@"测试",@"other"].copy btnColors:@[[UIColor redColor],[UIColor redColor],[UIColor redColor]].copy andButtonStateIsVertica:NO andIsContentTextfield:YES];
     
     //动画显示图片
-    ICAlarmView *alermView = [ICAlarmView alarmWithAnimationTitle:@"标题内容" messageArr:@[@"姓名：曹世鑫",@"手机号：15036142573",@"性别：男",@"地址：杭州首展科技"] messageType:NSTextAlignmentLeft timeInterval:0.5 delegate:self btnTitles:@[@"取消",@"去验证"] btnColors:@[[UIColor redColor],[UIColor redColor]] andButtonStateIsVertica:NO];
+    ICAlarmView *alermView = [ICAlarmView alarmWithAnimationTitle:@"标题内容" messageArr:@[@"姓名：曹世鑫",@"手机号：15036142573",@"性别：男",@"地址：杭州首展科技",@"测试：你猜猜看"] messageType:NSTextAlignmentLeft timeInterval:0.25 delegate:self btnTitles:@[@"取消",@"去验证"] btnColors:@[[UIColor redColor],[UIColor redColor]] andButtonStateIsVertica:NO];
     
     [self.view addSubview:alermView];
     

@@ -7,6 +7,7 @@
 //
 
 #import "ICAlarmView.h"
+#import "NSString+Extends.h"
 
 //告警框宽度
 #define ALARM_WITH 320-40
@@ -19,7 +20,7 @@
 #define BTNHEIGHT  40
 
 //label的字号大小
-#define TitleFont 15
+#define TitleFont [UIFont systemFontOfSize:15]
 
 typedef enum :NSInteger{
     btnTag = 10000000,
@@ -59,12 +60,12 @@ typedef enum :NSInteger{
     [self createTitleWithTitle:title];
     if (message.length>0) {
         UILabel *mess_label = [[UILabel alloc]init];
-        mess_label.font = [UIFont systemFontOfSize:TitleFont];
+        mess_label.font = TitleFont;
         mess_label.text = message;
         mess_label.textColor = [UIColor grayColor];
         mess_label.textAlignment = self.stateType;
         mess_label.numberOfLines = 0;
-        CGSize sizeMes = [mess_label sizeThatFits:CGSizeMake(ALARM_WITH-2*CONTENT_DIS, 0)];
+        CGSize sizeMes = [mess_label.text sizeWithFont:TitleFont maxW:ALARM_WITH-2*CONTENT_DIS];
         mess_label.frame = CGRectMake(CONTENT_DIS, max_Content, ALARM_WITH-2*CONTENT_DIS, sizeMes.height);
         [self.bgView addSubview:mess_label];
         max_Content = CGRectGetMaxY(mess_label.frame)+10;
@@ -83,30 +84,51 @@ typedef enum :NSInteger{
     [self createTitleWithTitle:title];
     CGFloat nowHeight = max_Content;
     for (int i = 0; i < messageArr.count; i++) {
-        UILabel *label = [[UILabel alloc] init];
-        label.text = messageArr[i];
-        label.font = [UIFont systemFontOfSize:TitleFont];
-        label.numberOfLines = 0;
-        CGSize sizeMes = [label sizeThatFits:CGSizeMake(ALARM_WITH-2*CONTENT_DIS, 0)];
+        NSString *str = messageArr[i];
+        CGSize sizeMes = [str sizeWithFont:TitleFont maxW:ALARM_WITH-2*CONTENT_DIS];
         max_Content += sizeMes.height+3;
     }
     max_Content += 10;
     [self showAnimationMessageWithMessageArr:messageArr begainY:nowHeight];
 }
+
 - (void)showAnimationMessageWithMessageArr:(NSArray *)messageArr begainY:(CGFloat)begainY {
     messageCount += 1;
     //创建显示label； 修改begainy
+//    //动画一
+//    __block CGFloat NowY = begainY;
+//    [UIView animateWithDuration:interval animations:^{
+//        UILabel *label = [[UILabel alloc] init];
+//        label.text = messageArr[messageCount-1];
+//        label.textColor = [UIColor grayColor];
+//        label.font = TitleFont;
+//        label.numberOfLines = 0;
+//        label.textAlignment = self.stateType;
+//        CGSize sizeMes = [label.text sizeWithFont:TitleFont maxW:ALARM_WITH-2*CONTENT_DIS];
+//        label.frame = CGRectMake(CONTENT_DIS, NowY, ALARM_WITH-2*CONTENT_DIS, sizeMes.height);
+//        [self.bgView addSubview:label];
+//        NowY = CGRectGetMaxY(label.frame)+3;
+//
+//    } completion:^(BOOL finished) {
+//        if (messageCount >= messageArr.count) {
+//            return;
+//        }else {
+//            [self showAnimationMessageWithMessageArr:messageArr begainY:NowY];
+//        }
+//    }];
+    
+    //动画二
     UILabel *label = [[UILabel alloc] init];
     label.text = messageArr[messageCount-1];
     label.textColor = [UIColor grayColor];
-    label.font = [UIFont systemFontOfSize:TitleFont];
+    label.font = TitleFont;
     label.numberOfLines = 0;
     label.textAlignment = self.stateType;
-    CGSize sizeMes = [label sizeThatFits:CGSizeMake(ALARM_WITH-2*CONTENT_DIS, 0)];
+    CGSize sizeMes = [label.text sizeWithFont:TitleFont maxW:ALARM_WITH-2*CONTENT_DIS];
     label.frame = CGRectMake(CONTENT_DIS, begainY, ALARM_WITH-2*CONTENT_DIS, sizeMes.height);
     [self.bgView addSubview:label];
     begainY = CGRectGetMaxY(label.frame)+3;
-    
+
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(interval * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         if (messageCount >= messageArr.count) {
             return;
