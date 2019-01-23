@@ -151,14 +151,22 @@ typedef enum :NSInteger{
 }
 
 - (void)buttonChoose:(UIButton *)sender{
-    //这里做点击返回处理
-    
-    [self.delegate alertView:self clickedButtonAtIndex:sender.tag-btnTag];
-    
+    NSInteger index = sender.tag-btnTag;
+    NSString *titleStr = nil;
     if (textfield) {
-         [self.delegate alertView:self clickedButtonAtIndex:sender.tag-btnTag andWithContentStr:textfield.text];
+        titleStr = textfield.text;
+    }
+    //这里做点击返回处理
+    if (self.alartBlock) {
+        self.alartBlock(index, titleStr);
     }
     
+    if (self.delegate) {
+        [self.delegate alertView:self clickedButtonAtIndex:index];
+        if (textfield) {
+            [self.delegate alertView:self clickedButtonAtIndex:index andWithContentStr:titleStr];
+        }
+    }
     [self removeFromSuperview];
 }
 

@@ -30,9 +30,12 @@ typedef void(^AlartBtnBlock)(NSInteger index,NSString *contentStr);
 - (instancetype)initWithAlarmWithTitle:(NSString *)title message:(NSString *)message messageType:(NSTextAlignment)state delegate:(id)object btnTitles:(NSArray *)titleArr btnColors:(NSArray *)btnColors andButtonStateIsVertica:(BOOL)isVertical andIsContentTextfield:(BOOL)isContent;
 
 + (instancetype)alarmWithTitle:(NSString *)title message:(NSString *)message messageType:(NSTextAlignment)state delegate:(id)object btnTitles:(NSArray *)titleArr btnColors:(NSArray *)btnColors andButtonStateIsVertica:(BOOL)isVertical andIsContentTextfield:(BOOL)isContent;
-//针对于类方法加载试图在window上面显示，
-- (void)show;
 
+
+
+
+//针对于类方法加载视图在window上面显示，
+- (void)show;
 @end
 
 
