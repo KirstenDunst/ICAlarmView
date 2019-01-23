@@ -13,7 +13,7 @@
 //内容距离边距
 #define CONTENT_DIS 20
 
-#define KMAINBOUNDS  [ UIScreen mainScreen ].bounds
+#define KMAINBOUNDS  [UIScreen mainScreen].bounds
 
 //竖向每个点击按钮的高度
 #define BTNHEIGHT  40
@@ -22,8 +22,7 @@ typedef enum :NSInteger{
     btnTag = 10000000,
 }buttonTags;
 
-@interface ICAlarmView ()
-{
+@interface ICAlarmView () {
     //白色框背景view
     UIView *bgView;
     //输入文本
@@ -32,7 +31,8 @@ typedef enum :NSInteger{
     CGFloat max_Content;
 }
 @property(nonatomic , strong)NSMutableArray *buttonTitleArr;
-
+//设置message内容显示的
+@property (nonatomic, assign)NSTextAlignment stateType;
 @end
 
 @implementation ICAlarmView
@@ -67,7 +67,7 @@ typedef enum :NSInteger{
         mess_label.font = [UIFont systemFontOfSize:15];
         mess_label.text = message;
         mess_label.textColor = [UIColor grayColor];
-        mess_label.textAlignment = 1;
+        mess_label.textAlignment = self.stateType;
         mess_label.numberOfLines = 0;
         CGSize sizeMes = [mess_label sizeThatFits:CGSizeMake(ALARM_WITH-2*CONTENT_DIS, 0)];
         mess_label.frame = CGRectMake(CONTENT_DIS, max_Content, ALARM_WITH-2*CONTENT_DIS, sizeMes.height);
@@ -81,18 +81,17 @@ typedef enum :NSInteger{
             max_Content = CGRectGetMaxY(textfield.frame)+10;
         }
     }
-    
 }
 
-- (void)buttonTitleArr:(NSMutableArray *)titleArr andIsVertical:(BOOL)isVertical{
+- (void)buttonTitleArr:(NSMutableArray *)titleArr btnColors:(NSArray *)btnColors andIsVertical:(BOOL)isVertical{
     if (titleArr.count>0) {
         UIView *btnBgView;
         if (isVertical) {
             //竖列排布button
-            btnBgView = [self verticalButtonViewBackWithTitleArr:titleArr];
+            btnBgView = [self verticalButtonViewBackWithTitleArr:titleArr btnColors:btnColors];
         }else{
             //横列排布button       可以在此添加一个判断，当数组元素大于多少的时候让它数列排布
-            btnBgView = [self horizonButtonViewBackWithTitleArr:titleArr];
+            btnBgView = [self horizonButtonViewBackWithTitleArr:titleArr btnColors:btnColors];
         }
         btnBgView.frame = CGRectMake(0, max_Content, btnBgView.frame.size.width, btnBgView.frame.size.height);
         [bgView addSubview:btnBgView];
@@ -104,7 +103,7 @@ typedef enum :NSInteger{
 }
 
 //竖列button的排布
-- (UIView *)verticalButtonViewBackWithTitleArr:(NSMutableArray *)titleArr{
+- (UIView *)verticalButtonViewBackWithTitleArr:(NSMutableArray *)titleArr btnColors:(NSArray *)btnColors{
     UIView *btnBgView = [[UIView alloc]init];
     btnBgView.backgroundColor = [UIColor colorWithRed:235/255.0 green:235/255.0 blue:235/255.0 alpha:1];
     btnBgView.frame = CGRectMake(0, 0, ALARM_WITH, BTNHEIGHT*titleArr.count);
@@ -113,6 +112,11 @@ typedef enum :NSInteger{
         myCreateButton.frame = CGRectMake(0, 1+BTNHEIGHT*i, btnBgView.frame.size.width, BTNHEIGHT-1);
         [myCreateButton setBackgroundColor:[UIColor whiteColor]];
         [myCreateButton setTitle:titleArr[i] forState:UIControlStateNormal];
+        UIColor *titleColor = [UIColor grayColor];
+        if (i < btnColors.count) {
+            titleColor = btnColors[i];
+        }
+        [myCreateButton setTitleColor:titleColor forState:UIControlStateNormal];
         [myCreateButton setBackgroundImage:[self imageWithColor:[UIColor lightGrayColor]] forState:UIControlStateHighlighted];
         myCreateButton.tag = btnTag+i;
         [myCreateButton addTarget:self action:@selector(buttonChoose:) forControlEvents:UIControlEventTouchUpInside];
@@ -123,7 +127,7 @@ typedef enum :NSInteger{
 
 
 //横向button排布。       button按钮的高度这里取50，如有需要自行修改
-- (UIView *)horizonButtonViewBackWithTitleArr:(NSMutableArray *)titleArr{
+- (UIView *)horizonButtonViewBackWithTitleArr:(NSMutableArray *)titleArr btnColors:(NSArray *)btnColors{
     UIView *btnBgView = [[UIView alloc]init];
     btnBgView.frame = CGRectMake(0, 0, ALARM_WITH, 50);
     btnBgView.backgroundColor = [UIColor colorWithRed:235/255.0 green:235/255.0 blue:235/255.0 alpha:1];
@@ -133,6 +137,11 @@ typedef enum :NSInteger{
         myCreateButton.frame = CGRectMake(cellWidth*i, 1, cellWidth-1, btnBgView.frame.size.height-1);
         [myCreateButton setBackgroundColor:[UIColor whiteColor]];
         [myCreateButton setTitle:titleArr[i] forState:UIControlStateNormal];
+        UIColor *titleColor = [UIColor grayColor];
+        if (i < btnColors.count) {
+            titleColor = btnColors[i];
+        }
+        [myCreateButton setTitleColor:titleColor forState:UIControlStateNormal];
         [myCreateButton setBackgroundImage:[self imageWithColor:[UIColor lightGrayColor]] forState:UIControlStateHighlighted];
         myCreateButton.tag = btnTag+i;
         [myCreateButton addTarget:self action:@selector(buttonChoose:) forControlEvents:UIControlEventTouchUpInside];
@@ -165,26 +174,20 @@ typedef enum :NSInteger{
         return theImage;  
 }
 
-
-+ (instancetype)alarmWithTitle:(NSString *)title message:(NSString *)message delegate:(id)object cancelButtonTitle:(NSString *)cancelTitleStr otherButtonTitles:(NSMutableArray *)titleArr andButtonStateIsVertica:(BOOL)isVertical andIsContentTextfield:(BOOL)isContent{
-    return [[self alloc]initWithAlarmWithTitle:title message:message delegate:object cancelButtonTitle:cancelTitleStr otherButtonTitles:titleArr andButtonStateIsVertica:isVertical andIsContentTextfield:isContent];
++ (instancetype)alarmWithTitle:(NSString *)title message:(NSString *)message messageType:(NSTextAlignment)state delegate:(id)object btnTitles:(NSArray *)titleArr btnColors:(NSArray *)btnColors andButtonStateIsVertica:(BOOL)isVertical andIsContentTextfield:(BOOL)isContent{
+    return [[self alloc]initWithAlarmWithTitle:title message:message  messageType:state delegate:object btnTitles:titleArr btnColors:btnColors andButtonStateIsVertica:isVertical andIsContentTextfield:isContent];
 }
-- (instancetype)initWithAlarmWithTitle:(NSString *)title message:(NSString *)message delegate:(id)object cancelButtonTitle:(NSString *)cancelTitleStr otherButtonTitles:(NSMutableArray *)titleArr andButtonStateIsVertica:(BOOL)isVertical andIsContentTextfield:(BOOL)isContent
-{
+- (instancetype)initWithAlarmWithTitle:(NSString *)title message:(NSString *)message messageType:(NSTextAlignment)state delegate:(id)object btnTitles:(NSArray *)titleArr btnColors:(NSArray *)btnColors andButtonStateIsVertica:(BOOL)isVertical andIsContentTextfield:(BOOL)isContent {
     self = [super initWithFrame:CGRectMake(0, 0, KMAINBOUNDS.size.width , KMAINBOUNDS.size.height)];
     self.backgroundColor = [UIColor colorWithRed:0.f green:0.f blue:0.f alpha:0.6f];
-    
+    self.stateType = state;
     if (self) {
-        
         self.delegate = object;
         [self createViewWithTitle:title andMessage:message andIsContentTextfield:isContent];
-        if (cancelTitleStr.length>0) {
-            [self.buttonTitleArr addObject:cancelTitleStr];
-        }
         if (titleArr.count>0) {
             [self.buttonTitleArr addObjectsFromArray:titleArr];
         }
-        [self buttonTitleArr:self.buttonTitleArr andIsVertical:isVertical];
+        [self buttonTitleArr:self.buttonTitleArr btnColors:btnColors andIsVertical:isVertical];
     }
     return self;
 }
