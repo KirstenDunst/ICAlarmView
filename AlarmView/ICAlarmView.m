@@ -95,47 +95,47 @@ typedef enum :NSInteger{
 - (void)showAnimationMessageWithMessageArr:(NSArray *)messageArr begainY:(CGFloat)begainY {
     messageCount += 1;
     //创建显示label； 修改begainy
-//    //动画一
-//    __block CGFloat NowY = begainY;
-//    [UIView animateWithDuration:interval animations:^{
-//        UILabel *label = [[UILabel alloc] init];
-//        label.text = messageArr[messageCount-1];
-//        label.textColor = [UIColor grayColor];
-//        label.font = TitleFont;
-//        label.numberOfLines = 0;
-//        label.textAlignment = self.stateType;
-//        CGSize sizeMes = [label.text sizeWithFont:TitleFont maxW:ALARM_WITH-2*CONTENT_DIS];
-//        label.frame = CGRectMake(CONTENT_DIS, NowY, ALARM_WITH-2*CONTENT_DIS, sizeMes.height);
-//        [self.bgView addSubview:label];
-//        NowY = CGRectGetMaxY(label.frame)+3;
-//
-//    } completion:^(BOOL finished) {
-//        if (messageCount >= messageArr.count) {
-//            return;
-//        }else {
-//            [self showAnimationMessageWithMessageArr:messageArr begainY:NowY];
-//        }
-//    }];
-    
-    //动画二
-    UILabel *label = [[UILabel alloc] init];
-    label.text = messageArr[messageCount-1];
-    label.textColor = [UIColor grayColor];
-    label.font = TitleFont;
-    label.numberOfLines = 0;
-    label.textAlignment = self.stateType;
-    CGSize sizeMes = [label.text sizeWithFont:TitleFont maxW:ALARM_WITH-2*CONTENT_DIS];
-    label.frame = CGRectMake(CONTENT_DIS, begainY, ALARM_WITH-2*CONTENT_DIS, sizeMes.height);
-    [self.bgView addSubview:label];
-    begainY = CGRectGetMaxY(label.frame)+3;
+    //动画一
+    __block CGFloat NowY = begainY;
+    [UIView animateWithDuration:interval animations:^{
+        UILabel *label = [[UILabel alloc] init];
+        label.text = messageArr[messageCount-1];
+        label.textColor = [UIColor grayColor];
+        label.font = TitleFont;
+        label.numberOfLines = 0;
+        label.textAlignment = self.stateType;
+        CGSize sizeMes = [label.text sizeWithFont:TitleFont maxW:ALARM_WITH-2*CONTENT_DIS];
+        label.frame = CGRectMake(CONTENT_DIS, NowY, ALARM_WITH-2*CONTENT_DIS, sizeMes.height);
+        [self.bgView addSubview:label];
+        NowY = CGRectGetMaxY(label.frame)+3;
 
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(interval * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    } completion:^(BOOL finished) {
         if (messageCount >= messageArr.count) {
             return;
         }else {
-            [self showAnimationMessageWithMessageArr:messageArr begainY:begainY];
+            [self showAnimationMessageWithMessageArr:messageArr begainY:NowY];
         }
-    });
+    }];
+    
+//    //动画二
+//    UILabel *label = [[UILabel alloc] init];
+//    label.text = messageArr[messageCount-1];
+//    label.textColor = [UIColor grayColor];
+//    label.font = TitleFont;
+//    label.numberOfLines = 0;
+//    label.textAlignment = self.stateType;
+//    CGSize sizeMes = [label.text sizeWithFont:TitleFont maxW:ALARM_WITH-2*CONTENT_DIS];
+//    label.frame = CGRectMake(CONTENT_DIS, begainY, ALARM_WITH-2*CONTENT_DIS, sizeMes.height);
+//    [self.bgView addSubview:label];
+//    begainY = CGRectGetMaxY(label.frame)+3;
+//
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(interval * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        if (messageCount >= messageArr.count) {
+//            return;
+//        }else {
+//            [self showAnimationMessageWithMessageArr:messageArr begainY:begainY];
+//        }
+//    });
 }
 
 - (void)buttonTitleArr:(NSArray *)titleArr btnColors:(NSArray *)btnColors andIsVertical:(BOOL)isVertical{
