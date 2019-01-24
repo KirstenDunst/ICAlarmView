@@ -39,7 +39,7 @@
     
     NSArray *tempArr = @[@{@"title":@"姓名",@"content":@"曹世鑫"},@{@"title":@"手机号",@"content":@"15036142573"},@{@"title":@"性别",@"content":@"男"},@{@"title":@"地址",@"content":@"杭州首展科技"},@{@"title":@"测试",@"content":@"你猜猜看"}];
     //动画显示图片
-    ICAlarmView *alermView = [ICAlarmView alarmWithAnimationTitle:@"标题内容" messageArr:tempArr messageType:NSTextAlignmentLeft timeInterval:0.25 delegate:self btnTitles:@[@"取消",@"去验证"] btnColors:@[[UIColor redColor],[UIColor redColor]] andButtonStateIsVertica:NO];
+    ICAlarmView *alermView = [ICAlarmView alarmWithAnimationTitle:@"标题内容" messageArr:tempArr messageType:NSTextAlignmentLeft timeInterval:0.4 delegate:self btnTitles:@[@"取消",@"去验证"] btnColors:@[[UIColor redColor],[UIColor redColor]] andButtonStateIsVertica:NO];
     
     [self.view addSubview:alermView];
     

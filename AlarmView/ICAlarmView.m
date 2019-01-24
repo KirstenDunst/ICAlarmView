@@ -87,9 +87,12 @@ typedef enum :NSInteger{
         NSDictionary *tempDic = messageArr[i];
         NSString *str = tempDic[@"content"];
         CGSize sizeMes = [str sizeWithFont:TitleFont maxW:ALARM_WITH-2*CONTENT_DIS];
+        if (sizeMes.height < 23) {
+            sizeMes = CGSizeMake(sizeMes.width, 23);
+        }
         max_Content += sizeMes.height+3;
     }
-    max_Content += 10;
+    max_Content += 20;
     [self showAnimationMessageWithMessageArr:messageArr begainY:nowHeight];
 }
 
@@ -101,7 +104,7 @@ typedef enum :NSInteger{
     NSDictionary *tempDic = messageArr[self.messageCount-1];
     
     UIView *cellView = [[UIView alloc]init];
-    cellView.hidden = YES;
+    cellView.alpha = 0.0;
     
     UILabel *titleLabel = [[UILabel alloc] init];
     titleLabel.frame = CGRectMake(CONTENT_DIS, 0, 60, 23);
@@ -118,6 +121,9 @@ typedef enum :NSInteger{
     contentLabel.numberOfLines = 0;
     contentLabel.textAlignment = self.stateType;
     CGSize sizeMes = [contentLabel.text sizeWithFont:TitleFont maxW:ALARM_WITH-2*CONTENT_DIS-70];
+    if (sizeMes.height < 23) {
+        sizeMes = CGSizeMake(sizeMes.width, 23);
+    }
     contentLabel.frame = CGRectMake(CONTENT_DIS+70, 0, ALARM_WITH-2*CONTENT_DIS-70, sizeMes.height);
     [cellView addSubview:contentLabel];
     
@@ -126,7 +132,7 @@ typedef enum :NSInteger{
     
     NowY = CGRectGetMaxY(cellView.frame)+3;
     [UIView animateWithDuration:interval animations:^{
-        cellView.hidden = NO;
+        cellView.alpha = 1.0;
     } completion:^(BOOL finished) {
     }];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(interval * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
