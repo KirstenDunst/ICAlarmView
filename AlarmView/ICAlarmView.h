@@ -35,7 +35,7 @@ typedef void(^AlartBtnBlock)(NSInteger index,NSString *contentStr);
 
 /* 实例化动画显示，从上到下一条一条信息显示的方法（调用show，是加载在window上的，也可直接当做一个view添加在任意组建上）
  @param  title          标题
- @param  messageArr     内容数组，内部是一个个的字符串对象
+ @param  messageArr     内容数组，内部是一个个的json,[{title:"",content:""}]
  @param  state          内容显示类型
  @param  timeInterval   每一条显示显示的时间间隔
  @param  object         代理的对象，如果使用block，这里可以不用传，写nil

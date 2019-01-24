@@ -33,13 +33,13 @@ typedef enum :NSInteger{
     CGFloat max_Content;
     //动画的间隔时间
     NSTimeInterval interval;
-    //message动画循环的次数；
-    int messageCount;
 }
 //白色框背景view
 @property (nonatomic, strong)UIView *bgView;
 //设置message内容显示的
 @property (nonatomic, assign)NSTextAlignment stateType;
+//message动画循环的次数
+@property (nonatomic, assign)int messageCount;
 @end
 
 @implementation ICAlarmView
@@ -84,7 +84,8 @@ typedef enum :NSInteger{
     [self createTitleWithTitle:title];
     CGFloat nowHeight = max_Content;
     for (int i = 0; i < messageArr.count; i++) {
-        NSString *str = messageArr[i];
+        NSDictionary *tempDic = messageArr[i];
+        NSString *str = tempDic[@"content"];
         CGSize sizeMes = [str sizeWithFont:TitleFont maxW:ALARM_WITH-2*CONTENT_DIS];
         max_Content += sizeMes.height+3;
     }
@@ -93,29 +94,49 @@ typedef enum :NSInteger{
 }
 
 - (void)showAnimationMessageWithMessageArr:(NSArray *)messageArr begainY:(CGFloat)begainY {
-    messageCount += 1;
+    self.messageCount += 1;
     //创建显示label； 修改begainy
     //动画一
     __block CGFloat NowY = begainY;
+    NSDictionary *tempDic = messageArr[self.messageCount-1];
+    
+    UIView *cellView = [[UIView alloc]init];
+    cellView.hidden = YES;
+    
+    UILabel *titleLabel = [[UILabel alloc] init];
+    titleLabel.frame = CGRectMake(CONTENT_DIS, 0, 60, 23);
+    titleLabel.text = tempDic[@"title"];
+    titleLabel.textColor = [UIColor grayColor];
+    titleLabel.font = TitleFont;
+    titleLabel.textAlignment = self.stateType;
+    [cellView addSubview:titleLabel];
+    
+    UILabel *contentLabel = [[UILabel alloc] init];
+    contentLabel.text = tempDic[@"content"];
+    contentLabel.textColor = [UIColor grayColor];
+    contentLabel.font = TitleFont;
+    contentLabel.numberOfLines = 0;
+    contentLabel.textAlignment = self.stateType;
+    CGSize sizeMes = [contentLabel.text sizeWithFont:TitleFont maxW:ALARM_WITH-2*CONTENT_DIS-70];
+    contentLabel.frame = CGRectMake(CONTENT_DIS+70, 0, ALARM_WITH-2*CONTENT_DIS-70, sizeMes.height);
+    [cellView addSubview:contentLabel];
+    
+    cellView.frame = CGRectMake(0, NowY, ALARM_WITH-2*CONTENT_DIS, sizeMes.height);
+    [self.bgView addSubview:cellView];
+    
+    NowY = CGRectGetMaxY(cellView.frame)+3;
     [UIView animateWithDuration:interval animations:^{
-        UILabel *label = [[UILabel alloc] init];
-        label.text = messageArr[messageCount-1];
-        label.textColor = [UIColor grayColor];
-        label.font = TitleFont;
-        label.numberOfLines = 0;
-        label.textAlignment = self.stateType;
-        CGSize sizeMes = [label.text sizeWithFont:TitleFont maxW:ALARM_WITH-2*CONTENT_DIS];
-        label.frame = CGRectMake(CONTENT_DIS, NowY, ALARM_WITH-2*CONTENT_DIS, sizeMes.height);
-        [self.bgView addSubview:label];
-        NowY = CGRectGetMaxY(label.frame)+3;
-
+        cellView.hidden = NO;
     } completion:^(BOOL finished) {
-        if (messageCount >= messageArr.count) {
+    }];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(interval * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if (self.messageCount >= messageArr.count) {
             return;
         }else {
             [self showAnimationMessageWithMessageArr:messageArr begainY:NowY];
         }
-    }];
+    });
+    
     
 //    //动画二
 //    UILabel *label = [[UILabel alloc] init];
@@ -263,7 +284,7 @@ typedef enum :NSInteger{
     self.stateType = state;
     max_Content = 0;
     interval = timeInterval;
-    messageCount = 0;
+    self.messageCount = 0;
     if (self) {
         self.delegate = object;
         [self createAnimationViewWithTitle:title andMessageArr:messageArr];
